@@ -1,6 +1,5 @@
 package Entities;
 
-import com.sun.source.doctree.SystemPropertyTree;
 
 /**
  * Uses a Top-Left anchor and x,y side lengths to form a rectangular box.
