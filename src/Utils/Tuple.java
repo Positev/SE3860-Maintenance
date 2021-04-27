@@ -1,5 +1,7 @@
 package Utils;
 
+import java.util.Objects;
+
 public class Tuple<T, U> {
 
     private T x;
@@ -11,6 +13,24 @@ public class Tuple<T, U> {
         this.y = u;
     }
 
+    @Override
+    public String toString() {
+        return "new Tuple(" + x + "," + y + ");";
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Tuple<?, ?> tuple = (Tuple<?, ?>) o;
+        return getX().equals(tuple.getX()) &&
+                getY().equals(tuple.getY());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getX(), getY());
+    }
 
     public T getX() {
         return x;
