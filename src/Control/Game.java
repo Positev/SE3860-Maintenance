@@ -6,6 +6,7 @@ import Entities.LaneBorders;
 import IO.InputParser;
 import IO.Operator;
 import SoundFX.Sounds;
+import Utils.Tuple;
 import javafx.application.Application;
 import javafx.geometry.*;
 import javafx.scene.Scene;
@@ -25,12 +26,14 @@ import java.util.Random;
 
 public class Game extends Application {
 
+
     Sounds sounds = new Sounds();
 
     //Stage and stage dimensions
     public static final int WIDTH = 1300;
     public static final int HEIGHT = 800;
     private Stage stage;
+
 
     //Title screen Scene and Labels
     private Scene TitleScreen;
@@ -64,11 +67,11 @@ public class Game extends Application {
     private int DriverNum = 0;
 
     //Prepare lanes to be drawn on the screen
-    private static final int LANEOFFSET = 300;//Distance of left edge from left of the screen
+    private static final int LANELEFTMARGIN = 300;//Distance of left edge from left of the screen
     private final double xLaneWidth = 190, yLaneHeight = HEIGHT;
-    Lane lane1 = new Lane(LANEOFFSET, 0, getxLaneWidth(), getyLaneHeight());
+    Lane lane1 = new Lane(LANELEFTMARGIN, 0, getxLaneWidth(), getyLaneHeight());
     LaneBorders laneBorderLeft = new LaneBorders("left");
-    Lane lane2 = new Lane(LANEOFFSET + (int)xLaneWidth, 0, getxLaneWidth(), getyLaneHeight());
+    Lane lane2 = new Lane(LANELEFTMARGIN + (int)xLaneWidth, 0, getxLaneWidth(), getyLaneHeight());
     LaneBorders laneBorderRight = new LaneBorders("right");
 
     private double randomVariable;//Determines donkey spawn lane after a reset
@@ -81,6 +84,10 @@ public class Game extends Application {
     //TODO: make the images and whatnot in Car and Donkey static so we don't need to make "new" here
     Car car = new Car(0, 0);
     Donkey donkey = new Donkey(0, 0);
+
+    PositionUpdateCalculator positionCalculator = new PositionUpdateCalculator();
+
+
 
     public void start( Stage stage1 ) throws Exception {
 
@@ -118,7 +125,7 @@ public class Game extends Application {
         sounds.playMusic();
 
         titlePaneInformation.getChildren().addAll(LabelIBM, LabelPC,LabelDonkey,
-                        LabelRemaster, LabelAuthor, LabelContinue);
+                LabelRemaster, LabelAuthor, LabelContinue);
 
         stage.setTitle("DONKEYBAS-REMASTERED");
         stage.setScene(TitleScreen);
@@ -150,12 +157,16 @@ public class Game extends Application {
         crashCarSetup();
         crashDonkeySetup();
 
+        this.positionCalculator.setCarImageSize(car.getCarImg().getWidth(), car.getCarImg().getHeight());
+        this.positionCalculator.setLaneSize(xLaneWidth, yLaneHeight);
+        this.positionCalculator.setDonkeyImageSize(donkey.getDonkeyImg().getWidth(), donkey.getDonkeyImg().getHeight());
+
         moveCar(Operator.INITIAL);
         moveDonkey(Operator.INITIAL);
 
         gameRoadPaneBox.getChildren().addAll(lane1, lane2, laneBorderLeft, laneBorderRight);
 
-        createCrash();
+        initializeUIForCrash();
 
         labelPane1.getChildren().addAll(LabelDonkeyScore,LabelDonkeyNum);
         labelPane2.getChildren().addAll(LabelDriverScore,LabelDriverNum);
@@ -169,12 +180,13 @@ public class Game extends Application {
         donkeyPaneBox.setAlignment(Pos.TOP_CENTER);
 
         GameScreen = new Scene(rootPaneGame, WIDTH, HEIGHT);
-    }
+
+}
 
     /**
      * This method sets up the panes for the crash sequence.
      */
-    public void createCrash()
+    public void initializeUIForCrash()
     {
         carPaneBox.getChildren().add(carImageView);
         donkeyPaneBox.getChildren().add(donkeyImageView);
@@ -353,25 +365,51 @@ public class Game extends Application {
         loop.play();
     }
 
+    public Tuple<Double, Double> getCarPos(){
+        return new Tuple<>(carPaneBox.getTranslateX(), carPaneBox.getTranslateY());
+    }
 
+    public Tuple<Double, Double> getDonkeyPos(){
+        return new Tuple<>(donkeyPaneBox.getTranslateX(), donkeyPaneBox.getTranslateY());
+    }
+
+
+    public Tuple<Double,Double> getNextCarPosition(Operator sign){
+
+        double carMoveIncrement = (HEIGHT - (donkey.getDonkeyImg().getHeight() + wiggleRoom + car.getCarImg().getHeight())) / 11;
+
+        Tuple<Double, Double> deltaPosition = new Tuple<>(0.0,0.0);
+
+        if(sign == Operator.INITIAL) {
+            deltaPosition = positionCalculator.calculateCarInitialPosition();
+        }
+        else if(sign == Operator.LEFT || sign == Operator.RIGHT) {
+            deltaPosition = positionCalculator.calculateLaneChangePosition(sign, getCarPos());
+
+        }
+        else if(sign == Operator.VERTICAL)
+        {
+            deltaPosition = positionCalculator.calculateCarMoveForwardPosition(carMoveIncrement, getCarPos());
+
+        }
+
+        return deltaPosition;
+    }
 
     /**
      * moveCar repositions the carPaneBox from one lane to the other.
      *  Also moves HitBox of car
      * @params Operator Sign enum
      */
+
+
+    // split into method to calculate new position of car and method to actually move it.
     public void moveCar(Operator sign){
 
 
-        double carMoveIncrement = (HEIGHT - (donkey.getDonkeyImg().getHeight() + wiggleRoom + car.getCarImg().getHeight())) / 11;
 
 
-        if(sign == Operator.INITIAL) {//initial placement of car
-            carPaneBox.setTranslateX(-(car.getCarImg().getWidth()/2));
-            carPaneBox.setTranslateY(yLaneHeight - (yLaneHeight/4) - 50);
-        }
-        else if(sign == Operator.LEFT) {//Moving Left
-            carPaneBox.setTranslateX(-xLaneWidth - (car.getCarImg().getWidth())/2);
+        if (sign == Operator.LEFT || sign == Operator.RIGHT){
             sounds.playLaneSounds();
             if(checkCollision())
             {
@@ -381,50 +419,53 @@ public class Game extends Application {
                 resetCar();
             }
         }
-        else if (sign == Operator.RIGHT) {//Moving Right
-            carPaneBox.setTranslateX(- (car.getCarImg().getWidth())/2);
-            sounds.playLaneSounds();
-            if(checkCollision())
-            {
-                startCrashAnimation();
-                addPointDonkey();
-                resetDonkey();
-                resetCar();
-            }
+
+         Tuple<Double, Double> newPosition = getNextCarPosition(sign);
+        car.moveCarHitBox((int)newPosition.getX().doubleValue(),(int) newPosition.getY().doubleValue());
+
+        carPaneBox.setTranslateX(newPosition.getX().doubleValue());
+        carPaneBox.setTranslateY(newPosition.getY().doubleValue());
+    }
+
+    public Tuple<Double, Double> calculateNextDonkeyPosition(Operator sign){
+
+        double carMoveIncrement = 1;
+
+        Tuple<Double, Double> deltaPosition = new Tuple<>(0.0,0.0);
+
+        if(sign == Operator.INITIAL) {
+            deltaPosition = positionCalculator.calculateDonkeyInitialPosition();
+        }
+        else if(sign == Operator.LEFT || sign == Operator.RIGHT) {
+            deltaPosition = positionCalculator.calculateDonkeyLaneChangePosition(sign, getDonkeyPos());
 
         }
         else if(sign == Operator.VERTICAL)
         {
+            deltaPosition = positionCalculator.calculateDonkeyForwardAdvance(1, getDonkeyPos());
 
-            carPaneBox.setTranslateY(carPaneBox.getTranslateY() - carMoveIncrement);
         }
 
-
-        car.moveCarHitBox((int)carPaneBox.getTranslateX(),(int)carPaneBox.getTranslateY());
-
+        return deltaPosition;
     }
+
     /* moveDonkey repositions the DonkeyPaneBox from one lane to the other.
      *  Also moves HitBox of Donkey
      * @params Operator Sign enum
      * */
     public void moveDonkey(Operator sign) {
 
+        Tuple<Double, Double> nextPosition = calculateNextDonkeyPosition(sign);
+        donkey.movedonkeyHitBox((int)nextPosition.getX().doubleValue(), (int)nextPosition.getY().doubleValue());
+
         if(sign == Operator.INITIAL) {//initial placement of donkey
             sounds.playDonkeySounds();
-            donkeyPaneBox.setTranslateX(-(donkey.getDonkeyImg().getWidth()/2));
-            donkeyPaneBox.setTranslateY(0);
         }
-        else if(sign == Operator.LEFT) {//Moving Left
-            donkeyPaneBox.setTranslateX(-xLaneWidth - (donkey.getDonkeyImg().getWidth())/2);
 
-        }
-        else if (sign == Operator.RIGHT) {//Moving Right
-            donkeyPaneBox.setTranslateX(- (donkey.getDonkeyImg().getWidth())/2);
-
-        }
-        else if(sign == Operator.VERTICAL)
+        donkeyPaneBox.setTranslateX(nextPosition.getX().doubleValue());
+        donkeyPaneBox.setTranslateY(nextPosition.getY().doubleValue());
+        if(sign == Operator.VERTICAL)
         {
-            donkeyPaneBox.setTranslateY(donkeyPaneBox.getTranslateY() + 1);
             if(checkCollision())
             {
 
@@ -436,18 +477,16 @@ public class Game extends Application {
             }
             if (donkeyPaneBox.getTranslateY() > (HEIGHT - donkey.getDonkeyImg().getHeight())) //if donkey passes end border, reset.
             {
-                    resetDonkey();
-                    progressCar();
-                    donkeyPassedCount++;
-                    if (donkeyPassedCount == 11) {
-                        sounds.playWinSounds();
-                        addPointCar();
-                        resetCar();
-                    }
+                resetDonkey();
+                progressCar();
+                donkeyPassedCount++;
+                if (donkeyPassedCount == 11) {
+                    sounds.playWinSounds();
+                    addPointCar();
+                    resetCar();
+                }
             }
         }
-
-        donkey.movedonkeyHitBox((int)donkeyPaneBox.getTranslateX(),(int)donkeyPaneBox.getTranslateY());
     }
 
     /**
