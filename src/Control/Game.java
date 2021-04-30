@@ -80,6 +80,7 @@ public class Game extends Application {
     private InputParser inputParser;
     private Timeline loop;
     private Timeline crashLoop;
+    private Random random = new Random();
 
     //TODO: make the images and whatnot in Car and Donkey static so we don't need to make "new" here
     Car car = new Car(0, 0);
@@ -504,8 +505,7 @@ public class Game extends Application {
      */
     public void resetDonkey()
     {
-        Random random = new Random();
-        randomVariable  = random.nextInt((1 - 0) + 1) + 0;
+        randomVariable  = random.nextInt(2);
         donkeyPaneBox.setTranslateY(0);
         if(randomVariable == 0)
         {
@@ -675,5 +675,13 @@ public class Game extends Application {
     public static void main( String[] args )
     {
         Application.launch(args);
+    }
+
+    public void setRandom(Random random) {
+        this.random = random;
+    }
+
+    public StackPane getDonkeyPaneBox() {
+        return donkeyPaneBox;
     }
 }
