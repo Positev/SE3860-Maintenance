@@ -137,7 +137,7 @@ class ResetDonkeyTest {
 
 
     @Test
-    void testStackPaneHitBoxIntegration() {
+    void testResetDonkeyIntegration() {
 
         mockGame.sounds = Mockito.spy(Sounds.class);
         Random mockRand = Mockito.spy(Random.class);
