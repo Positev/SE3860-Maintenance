@@ -505,7 +505,7 @@ public class Game extends Application {
      */
     public void resetDonkey()
     {
-        randomVariable  = random.nextInt(2);
+        randomVariable  = random.nextInt((1 - 0) + 1) + 0;
         donkeyPaneBox.setTranslateY(0);
         if(randomVariable == 0)
         {
@@ -683,5 +683,9 @@ public class Game extends Application {
 
     public StackPane getDonkeyPaneBox() {
         return donkeyPaneBox;
+    }
+
+    public void setDonkeyPaneBox(StackPane pane) {
+        this.donkeyPaneBox  = pane;
     }
 }
