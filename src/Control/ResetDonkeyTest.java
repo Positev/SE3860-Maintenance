@@ -137,7 +137,7 @@ class ResetDonkeyTest {
 
 
     @Test
-    void SystemTest() {
+    void testResetDonkeySystem() {
 
         mockGame.sounds = Mockito.spy(Sounds.class);
         Random mockRand = Mockito.spy(Random.class);
