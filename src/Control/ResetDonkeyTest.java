@@ -137,18 +137,39 @@ class ResetDonkeyTest {
 
 
     @Test
-    void testResetDonkeyIntegration() {
+    void testResetDonkeyIntegrationRight() {
+        double expectedX = -69;
+        double expectedY = 0;
 
         mockGame.sounds = Mockito.spy(Sounds.class);
-        Random mockRand = Mockito.spy(Random.class);
-        mockGame.setRandom(mockRand);
+        mockGame.setRandom(new Random(1565254165));
+
 
         mockGame.resetDonkey();
         Mockito.verify(mockGame, atLeastOnce()).moveDonkey(Mockito.any(Operator.class));
         Mockito.verify(mockGame.sounds, times(1)).playDonkeySounds();
-        Mockito.verify(mockRand, times(1)).nextInt(2);
 
         Assertions.assertEquals(mockGame.donkey.getHitbox().getBoxAnchorX(), mockGame.getDonkeyPaneBox().translateXProperty().doubleValue(), 0.001);
         Assertions.assertEquals(mockGame.donkey.getHitbox().getBoxAnchorY(), mockGame.getDonkeyPaneBox().translateYProperty().doubleValue(), 0.001);
+        Assertions.assertEquals(mockGame.donkey.getHitbox().getBoxAnchorX(), expectedX);
+        Assertions.assertEquals(mockGame.donkey.getHitbox().getBoxAnchorY(), expectedY);
+    }
+
+    @Test
+    void testResetDonkeyIntegrationLeft() {
+        double expectedX = -259;
+        double expectedY = 0;
+
+        mockGame.sounds = Mockito.spy(Sounds.class);
+        mockGame.setRandom(new Random(0));
+
+        mockGame.resetDonkey();
+        Mockito.verify(mockGame, atLeastOnce()).moveDonkey(Mockito.any(Operator.class));
+        Mockito.verify(mockGame.sounds, times(1)).playDonkeySounds();
+
+        Assertions.assertEquals(mockGame.donkey.getHitbox().getBoxAnchorX(), mockGame.getDonkeyPaneBox().translateXProperty().doubleValue(), 0.001);
+        Assertions.assertEquals(mockGame.donkey.getHitbox().getBoxAnchorY(), mockGame.getDonkeyPaneBox().translateYProperty().doubleValue(), 0.001);
+        Assertions.assertEquals(mockGame.donkey.getHitbox().getBoxAnchorX(), expectedX);
+        Assertions.assertEquals(mockGame.donkey.getHitbox().getBoxAnchorY(), expectedY);
     }
 }
