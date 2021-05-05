@@ -1,8 +1,6 @@
 package Control;
 
-import Entities.Car;
-import Entities.Donkey;
-import Entities.LaneBorders;
+import Entities.*;
 import IO.InputParser;
 import IO.Operator;
 import SoundFX.Sounds;
@@ -21,7 +19,9 @@ import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.util.Duration;
 import GUI.ColorScheme;
-import Entities.Lane;
+
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 public class Game extends Application {
@@ -32,6 +32,9 @@ public class Game extends Application {
     //Stage and stage dimensions
     public static final int WIDTH = 1300;
     public static final int HEIGHT = 800;
+    private static final int MAX_LANES = 4;
+    private static final int MIN_LANES = 2;
+
     private Stage stage;
 
 
@@ -69,10 +72,6 @@ public class Game extends Application {
     //Prepare lanes to be drawn on the screen
     private static final int LANELEFTMARGIN = 300;//Distance of left edge from left of the screen
     private final double xLaneWidth = 190, yLaneHeight = HEIGHT;
-    Lane lane1 = new Lane(LANELEFTMARGIN, 0, getxLaneWidth(), getyLaneHeight());
-    LaneBorders laneBorderLeft = new LaneBorders("left");
-    Lane lane2 = new Lane(LANELEFTMARGIN + (int)xLaneWidth, 0, getxLaneWidth(), getyLaneHeight());
-    LaneBorders laneBorderRight = new LaneBorders("right");
 
     private double randomVariable;//Determines donkey spawn lane after a reset
     private int wiggleRoom = 150;//distance from bottom of donkey spawn to win
@@ -88,7 +87,25 @@ public class Game extends Application {
 
     PositionUpdateCalculator positionCalculator = new PositionUpdateCalculator();
 
+    private List<Lane> makeLanes(int n){
+        List<Lane> lanes = new ArrayList<>();
 
+        // enforce global range on n
+        n = Math.max(MIN_LANES, n);
+        n = Math.min(MAX_LANES, n);
+
+        // always expect a right and a left lane so n should be the number of middle lanes
+        n -= 2;
+
+        lanes.add(new LeftLane(LANELEFTMARGIN, 0, getxLaneWidth(), getyLaneHeight()));
+        for (int i = 0; i < n; i++) {
+            lanes.add(new RightLane((int) (LANELEFTMARGIN + getxLaneWidth() * (i + 1)), 0, getxLaneWidth(), getyLaneHeight()));
+        }
+        lanes.add(new RightLane((int) (LANELEFTMARGIN + getxLaneWidth() * (n + 1)), 0, getxLaneWidth(), getyLaneHeight()));
+
+
+        return lanes;
+    }
 
     public void start( Stage stage1 ) throws Exception {
 
@@ -164,8 +181,10 @@ public class Game extends Application {
 
         moveCar(Operator.INITIAL);
         moveDonkey(Operator.INITIAL);
+        List<Lane> lanes = makeLanes(3);
 
-        gameRoadPaneBox.getChildren().addAll(lane1, lane2, laneBorderLeft, laneBorderRight);
+        lanes.forEach((lane -> gameRoadPaneBox.getChildren().addAll(lane.getUIChildren())));
+
 
         initializeUIForCrash();
 
