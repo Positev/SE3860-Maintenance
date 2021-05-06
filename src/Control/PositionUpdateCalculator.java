@@ -1,13 +1,28 @@
 package Control;
 
+import Entities.Lane;
 import IO.Operator;
 import Utils.Tuple;
 
+import java.util.List;
+
 public class PositionUpdateCalculator {
+
+    public static final int STARTING_LANE = 0;
+
 
     private Tuple<Double, Double> carImageSize = new Tuple<>(0.0,0.0);
     private Tuple<Double, Double> donkeyImageSize = new Tuple<>(0.0,0.0);
     private Tuple<Double, Double> laneSize = new Tuple<>(0.0,0.0);
+
+    private List<Lane> lanes;
+    private int currentCarLane;
+    private int currentDonkeyLane;
+
+    public PositionUpdateCalculator(List<Lane> lanes){
+        setLanes(lanes);
+        setCurrentCarLane(STARTING_LANE);
+    }
 
     public Tuple<Double, Double> calculateDonkeyInitialPosition(){
         double x = -(getDonkeyImageSize().getX()/2);
@@ -18,15 +33,23 @@ public class PositionUpdateCalculator {
         double deltaX = 0.0;
 
         if (direction == Operator.LEFT){
-            deltaX = -getLaneSize().getX() - (getDonkeyImageSize().getX() / 2);
+            if (currentDonkeyLane > 0){
+
+                currentDonkeyLane -= 1;
+            }
         }
         else if (direction == Operator.RIGHT){
-            deltaX = -getDonkeyImageSize().getX() / 2;
-        }
-        else{}
+            if (currentDonkeyLane < this.lanes.size() - 1){
 
+                currentDonkeyLane += 1;
+            }
+        }
+
+        Lane occupiedLane = this.lanes.get(currentDonkeyLane);
+        deltaX = (- occupiedLane.getWidth() - donkeyImageSize.getX() / 2 ) + currentDonkeyLane * occupiedLane.getWidth();
         return new Tuple<>(deltaX, current.getY());
     }
+
 
     public Tuple<Double, Double> calculateDonkeyForwardAdvance(double distance, Tuple<Double,Double> current){
         double deltaY =  distance;
@@ -38,12 +61,22 @@ public class PositionUpdateCalculator {
         double deltaX = 0.0;
 
         if (direction == Operator.LEFT){
-            deltaX = -getLaneSize().getX() - (getCarImageSize().getX() / 2);
+            if (currentCarLane > 0){
+
+                currentCarLane -= 1;
+            }
         }
         else if (direction == Operator.RIGHT){
-            deltaX = -getCarImageSize().getX() / 2;
+            if (currentCarLane < this.lanes.size() - 1){
+
+                currentCarLane += 1;
+            }
         }
-        else{}
+
+
+        Lane occupiedLane = this.lanes.get(currentCarLane);
+        deltaX = (- occupiedLane.getWidth() - carImageSize.getX() / 2 ) + currentCarLane * occupiedLane.getWidth();
+
 
         return new Tuple<>(deltaX,current.getY());
     }
@@ -88,5 +121,16 @@ public class PositionUpdateCalculator {
     public void setLaneSize(Double x, Double y) {
         this.laneSize.setX(x);
         this.laneSize.setY(y);
+    }
+
+    public void setLanes(List<Lane> lanes) {
+        this.lanes = lanes;
+    }
+
+    public void setCurrentCarLane(int currentCarLane) {
+        this.currentCarLane = currentCarLane;
+    }
+    public void setCurrentDonkeyLane(int currentDonkeyLane) {
+        this.currentDonkeyLane = currentDonkeyLane;
     }
 }

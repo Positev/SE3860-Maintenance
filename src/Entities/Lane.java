@@ -6,4 +6,7 @@ import java.util.List;
 
 public interface Lane {
     List<Node> getUIChildren();
+
+    int getX();
+    int getWidth();
 }

@@ -12,7 +12,8 @@ public class DonkeyMovementTest {
 
     @org.junit.jupiter.api.BeforeEach
     void BeforeEach(){
-        calculator = new PositionUpdateCalculator();
+        LaneGenerator laneGenerator = new LaneGenerator(250, 800);
+        calculator = new PositionUpdateCalculator(laneGenerator.makeLanes(2));
         calculator.setDonkeyImageSize(200d,200d);
         calculator.setLaneSize(250d,800d);
         calculator.setCarImageSize(200d,400d);

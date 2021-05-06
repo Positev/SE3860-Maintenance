@@ -84,31 +84,15 @@ public class Game extends Application {
     //TODO: make the images and whatnot in Car and Donkey static so we don't need to make "new" here
     Car car = new Car(0, 0);
     Donkey donkey = new Donkey(0, 0);
+    int laneCount = random.nextInt(MAX_LANES + 1 - MIN_LANES) + MIN_LANES;
 
-    PositionUpdateCalculator positionCalculator = new PositionUpdateCalculator();
-
-    private List<Lane> makeLanes(int n){
-        List<Lane> lanes = new ArrayList<>();
-
-        // enforce global range on n
-        n = Math.max(MIN_LANES, n);
-        n = Math.min(MAX_LANES, n);
-
-        // always expect a right and a left lane so n should be the number of middle lanes
-        n -= 2;
-
-        lanes.add(new LeftLane(LANELEFTMARGIN, 0, getxLaneWidth(), getyLaneHeight()));
-        for (int i = 0; i < n; i++) {
-            lanes.add(new MiddleLane((int) (LANELEFTMARGIN + getxLaneWidth() * (i + 1)), 0, getxLaneWidth(), getyLaneHeight()));
-        }
-        lanes.add(new RightLane((int) (LANELEFTMARGIN + getxLaneWidth() * (n + 1)), 0, getxLaneWidth(), getyLaneHeight()));
+    LaneGenerator laneGenerator = new LaneGenerator((int) getxLaneWidth(), (int) getyLaneHeight());
+    List<Lane> lanes = laneGenerator.makeLanes( laneCount);
+    PositionUpdateCalculator positionCalculator = new PositionUpdateCalculator(lanes);
 
 
-        return lanes;
-    }
 
     public void start( Stage stage1 ) throws Exception {
-
         ////////////////////////////////////////////////////////////////
         //                   Title Page UI                            //
         ////////////////////////////////////////////////////////////////
@@ -181,7 +165,6 @@ public class Game extends Application {
 
         moveCar(Operator.INITIAL);
         moveDonkey(Operator.INITIAL);
-        List<Lane> lanes = makeLanes(4);
 
         lanes.forEach((lane -> gameRoadPaneBox.getChildren().addAll(lane.getUIChildren())));
 
@@ -524,20 +507,17 @@ public class Game extends Application {
      */
     public void resetDonkey()
     {
-        randomVariable  = random.nextInt((1 - 0) + 1) + 0;
+        randomVariable  = random.nextInt(laneCount);
+        positionCalculator.setCurrentDonkeyLane(0);
+        moveDonkey(Operator.LEFT);
+
         donkeyPaneBox.setTranslateY(0);
-        if(randomVariable == 0)
-        {
+        for (int i = 0; i < randomVariable; i++) {
+
             moveDonkey(Operator.RIGHT);
-            sounds.playDonkeySounds();
-            donkey.movedonkeyHitBox((int)donkeyPaneBox.getTranslateX(), (int)donkeyPaneBox.getTranslateY());
         }
-        else if(randomVariable == 1)
-        {
-            moveDonkey(Operator.LEFT);
-            sounds.playDonkeySounds();
-            donkey.movedonkeyHitBox((int)donkeyPaneBox.getTranslateX(), (int)donkeyPaneBox.getTranslateY());
-        }
+
+        donkey.movedonkeyHitBox((int)donkeyPaneBox.getTranslateX(), (int)donkeyPaneBox.getTranslateY());
     }
 
     /**
