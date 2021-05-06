@@ -38,12 +38,15 @@ class ResetDonkeyTest {
         Mockito.doCallRealMethod().when(mockGame).setDonkeyPaneBox(Mockito.any(StackPane.class));
         Random mockRand = Mockito.mock(Random.class);
         StackPane mockPane = Mockito.mock(StackPane.class);
+        int laneCount = 2;
+        mockGame.laneCount = laneCount;
         mockGame.setRandom(mockRand);
         mockGame.setDonkeyPaneBox(mockPane);
+        mockGame.positionCalculator = Mockito.mock(PositionUpdateCalculator.class);;
         mockGame.sounds = Mockito.mock(Sounds.class);
         mockGame.donkey = Mockito.mock(Donkey.class);
 
-        Mockito.doReturn(0).when(mockRand).nextInt(2);
+        Mockito.doReturn(1).when(mockRand).nextInt(laneCount);
         //Unable to mock final methods for Stack Pane
         mockPane.setTranslateY(ExpectedYPos);
         mockPane.setTranslateX(ExpectedXPos);
@@ -62,14 +65,17 @@ class ResetDonkeyTest {
         Mockito.doCallRealMethod().when(mockGame).resetDonkey();
         Mockito.doCallRealMethod().when(mockGame).setRandom(Mockito.any(Random.class));
         Mockito.doCallRealMethod().when(mockGame).setDonkeyPaneBox(Mockito.any(StackPane.class));
+        int laneCount = 2;
+        mockGame.laneCount = laneCount;
         Random mockRand = Mockito.mock(Random.class);
         StackPane mockPane = Mockito.mock(StackPane.class);
         mockGame.setRandom(mockRand);
         mockGame.setDonkeyPaneBox(mockPane);
+        mockGame.positionCalculator = Mockito.mock(PositionUpdateCalculator.class);;
         mockGame.sounds = Mockito.mock(Sounds.class);
         mockGame.donkey = Mockito.mock(Donkey.class);
 
-        Mockito.doReturn(1).when(mockRand).nextInt(2);
+        Mockito.doReturn(0).when(mockRand).nextInt(laneCount);
         //Unable to mock final methods for Stack Pane
         mockPane.setTranslateY(ExpectedYPos);
         mockPane.setTranslateX(ExpectedXPos);
@@ -88,14 +94,17 @@ class ResetDonkeyTest {
         Mockito.doCallRealMethod().when(mockGame).resetDonkey();
         Mockito.doCallRealMethod().when(mockGame).setRandom(Mockito.any(Random.class));
         Mockito.doCallRealMethod().when(mockGame).setDonkeyPaneBox(Mockito.any(StackPane.class));
+        int laneCount = 2;
+        mockGame.laneCount = laneCount;
         Random mockRand = Mockito.mock(Random.class);
         StackPane mockPane = Mockito.mock(StackPane.class);
         mockGame.setRandom(mockRand);
         mockGame.setDonkeyPaneBox(mockPane);
+        mockGame.positionCalculator = Mockito.mock(PositionUpdateCalculator.class);;
         mockGame.sounds = Mockito.mock(Sounds.class);
         mockGame.donkey = Mockito.mock(Donkey.class);
 
-        Mockito.doReturn(1).when(mockRand).nextInt(2);
+        Mockito.doReturn(0).when(mockRand).nextInt(laneCount);
         Mockito.doAnswer(invocationOnMock -> {
             mockPane.setTranslateX(ExpectedXPos);
             return null;
@@ -118,12 +127,15 @@ class ResetDonkeyTest {
         Mockito.doCallRealMethod().when(mockGame).setDonkeyPaneBox(Mockito.any(StackPane.class));
         Random mockRand = Mockito.mock(Random.class);
         StackPane mockPane = Mockito.mock(StackPane.class);
+        int laneCount = 2;
+        mockGame.laneCount = laneCount;
         mockGame.setRandom(mockRand);
         mockGame.setDonkeyPaneBox(mockPane);
+        mockGame.positionCalculator = Mockito.mock(PositionUpdateCalculator.class);;
         mockGame.sounds = Mockito.mock(Sounds.class);
         mockGame.donkey = Mockito.mock(Donkey.class);
 
-        Mockito.doReturn(0).when(mockRand).nextInt(2);
+        Mockito.doReturn(1).when(mockRand).nextInt(laneCount);
         Mockito.doAnswer(invocationOnMock -> {
             mockPane.setTranslateX(ExpectedXPos);
             return null;
@@ -143,7 +155,6 @@ class ResetDonkeyTest {
 
         mockGame.sounds = Mockito.spy(Sounds.class);
         mockGame.setRandom(new Random(1565254165));
-
 
         mockGame.resetDonkey();
         Mockito.verify(mockGame, atLeastOnce()).moveDonkey(Mockito.any(Operator.class));

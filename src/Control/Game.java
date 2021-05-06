@@ -1,26 +1,28 @@
 package Control;
 
-import Entities.*;
+import Entities.Car;
+import Entities.Donkey;
+import Entities.Lane;
+import GUI.ColorScheme;
 import IO.InputParser;
 import IO.Operator;
 import SoundFX.Sounds;
 import Utils.Tuple;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.application.Application;
-import javafx.geometry.*;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
-import javafx.stage.Stage;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-import javafx.scene.text.Font;
 import javafx.scene.shape.Rectangle;
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
+import javafx.scene.text.Font;
+import javafx.stage.Stage;
 import javafx.util.Duration;
-import GUI.ColorScheme;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -516,7 +518,7 @@ public class Game extends Application {
 
             moveDonkey(Operator.RIGHT);
         }
-
+        sounds.playDonkeySounds();
         donkey.movedonkeyHitBox((int)donkeyPaneBox.getTranslateX(), (int)donkeyPaneBox.getTranslateY());
     }
 
