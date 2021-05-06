@@ -12,7 +12,7 @@ public class LeftLane implements Lane {
 
     public LeftLane(int startX, int startY, double width, double height){
         this.lane = new LanePane(startX, startY, width, height);
-        this.border = new LaneBorderPane("left");
+        this.border = new LaneBorderPane("left", startX, (int) width);
     }
 
     @Override

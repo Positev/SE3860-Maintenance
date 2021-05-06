@@ -99,7 +99,7 @@ public class Game extends Application {
 
         lanes.add(new LeftLane(LANELEFTMARGIN, 0, getxLaneWidth(), getyLaneHeight()));
         for (int i = 0; i < n; i++) {
-            lanes.add(new RightLane((int) (LANELEFTMARGIN + getxLaneWidth() * (i + 1)), 0, getxLaneWidth(), getyLaneHeight()));
+            lanes.add(new MiddleLane((int) (LANELEFTMARGIN + getxLaneWidth() * (i + 1)), 0, getxLaneWidth(), getyLaneHeight()));
         }
         lanes.add(new RightLane((int) (LANELEFTMARGIN + getxLaneWidth() * (n + 1)), 0, getxLaneWidth(), getyLaneHeight()));
 
@@ -181,7 +181,7 @@ public class Game extends Application {
 
         moveCar(Operator.INITIAL);
         moveDonkey(Operator.INITIAL);
-        List<Lane> lanes = makeLanes(3);
+        List<Lane> lanes = makeLanes(4);
 
         lanes.forEach((lane -> gameRoadPaneBox.getChildren().addAll(lane.getUIChildren())));
 

@@ -11,7 +11,7 @@ public class RightLane implements Lane {
 
     public RightLane(int startX, int startY, double width, double height){
         this.lane = new LanePane(startX, startY, width, height);
-        this.border = new LaneBorderPane("right");
+        this.border = new LaneBorderPane("right", startX, (int) width);
     }
 
     @Override

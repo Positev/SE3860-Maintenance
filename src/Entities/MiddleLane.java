@@ -11,7 +11,7 @@ public class MiddleLane implements Lane {
 
     public MiddleLane(int startX, int startY, double width, double height){
         this.lane = new LanePane(startX, startY, width, height);
-        this.border = new LaneBorderPane("middle");
+        this.border = new LaneBorderPane("middle", startX, (int) width);
     }
 
     @Override
