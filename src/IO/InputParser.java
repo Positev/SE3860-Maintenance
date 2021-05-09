@@ -44,10 +44,21 @@ public class InputParser {
                             game.moveCar(Operator.RIGHT);
                         }
                         break;
+                    case UP:
+                        if (!title) {
+                            game.moveCar(Operator.UP);
+                        }
+                        break;
+                    case DOWN:
+                        if (!title) {
+                            game.moveCar(Operator.DOWN);
+                        }
+                        break;
                     case ESCAPE:
                         title = false;
                         System.exit(1);
                         break;
+
                 }
             }
 
