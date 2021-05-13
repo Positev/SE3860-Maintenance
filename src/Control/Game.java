@@ -77,10 +77,13 @@ public class Game extends Application {
 
     private double randomVariable;//Determines donkey spawn lane after a reset
     private int wiggleRoom = 150;//distance from bottom of donkey spawn to win
+    private int DIAGONAL_NUM = 2;//Constant to help randomly decide when donkey can move diagonally
 
     private InputParser inputParser;
     private Timeline loop;
     private Timeline crashLoop;
+    private Timeline diagonalLoop;
+    private boolean hasGoneDiagonal = false;
     private Random random = new Random();
 
     //TODO: make the images and whatnot in Car and Donkey static so we don't need to make "new" here
@@ -371,6 +374,18 @@ public class Game extends Application {
         loop.play();
     }
 
+    public void startDonkeyDiagonal(){
+        hasGoneDiagonal = true;
+        loop = new Timeline(
+                new KeyFrame(Duration.millis(5), e -> moveDonkey(Operator.VERTICAL)));
+        loop.setCycleCount(Timeline.INDEFINITE);
+        loop.play();
+
+        diagonalLoop = new Timeline(new KeyFrame(Duration.millis(750), e -> moveDonkey(Operator.DIAGONAL)));
+        diagonalLoop.setCycleCount(Timeline.INDEFINITE);
+        diagonalLoop.play();
+    }
+
     public Tuple<Double, Double> getCarPos(){
         return new Tuple<>(carPaneBox.getTranslateX(), carPaneBox.getTranslateY());
     }
@@ -459,6 +474,10 @@ public class Game extends Application {
             deltaPosition = positionCalculator.calculateDonkeyForwardAdvance(1, getDonkeyPos());
 
         }
+        else if(sign == Operator.DIAGONAL)
+        {
+            deltaPosition = positionCalculator.calculateDonkeyDiagonalAdvance(getDonkeyPos());
+        }
 
         return deltaPosition;
     }
@@ -478,7 +497,7 @@ public class Game extends Application {
 
         donkeyPaneBox.setTranslateX(nextPosition.getX().doubleValue());
         donkeyPaneBox.setTranslateY(nextPosition.getY().doubleValue());
-        if(sign == Operator.VERTICAL)
+        if(sign == Operator.VERTICAL || sign == Operator.DIAGONAL)
         {
             if(checkCollision())
             {
@@ -519,6 +538,21 @@ public class Game extends Application {
     public void resetDonkey()
     {
         randomVariable  = random.nextInt(laneCount);
+        if(lanes.size() != 2){
+            loop.stop();
+            if(hasGoneDiagonal){
+                diagonalLoop.stop();
+                hasGoneDiagonal = false;
+            }
+            int donkeyDiagonalDecider = random.nextInt(5);
+            if(donkeyDiagonalDecider == 2){
+                startDonkeyDiagonal();
+            }
+            else{
+                startDonkey();
+            }
+
+        }
         positionCalculator.setCurrentDonkeyLane(0);
         moveDonkey(Operator.LEFT);
 
@@ -527,6 +561,7 @@ public class Game extends Application {
 
             moveDonkey(Operator.RIGHT);
         }
+        positionCalculator.setOriginalDonkeyLane((int)randomVariable);
         sounds.playDonkeySounds();
         donkey.movedonkeyHitBox((int)donkeyPaneBox.getTranslateX(), (int)donkeyPaneBox.getTranslateY());
     }
