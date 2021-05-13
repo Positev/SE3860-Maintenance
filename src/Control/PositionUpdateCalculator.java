@@ -76,11 +76,11 @@ public class PositionUpdateCalculator {
         double deltaX;
 
         if(this.lanes.size() == 3){
-            deltaX = calculateThreeLaneMovement();
+            deltaX = calculateThreeLaneDiagonalMovement();
             return new Tuple<>(deltaX, current.getY());
         }
         else if(this.lanes.size() >= 4){
-            deltaX = calculateFourPlusLaneMovement();
+            deltaX = calculateFourPlusLaneDiagonalMovement();
             return new Tuple<>(deltaX, current.getY());
         }
         else{ //This should not be run at any point, but this is for security against errors.
@@ -89,7 +89,7 @@ public class PositionUpdateCalculator {
     }
 
     //I moved this into its own method so that the main diagonal method was less clustered
-    private Double calculateThreeLaneMovement(){
+    private Double calculateThreeLaneDiagonalMovement(){
         if(currentDonkeyLane == 0){
             currentDonkeyLane += 1;
         }
@@ -115,7 +115,7 @@ public class PositionUpdateCalculator {
         return deltaX;
     }
     //I also moved this into its own method so the main diagonal movement is less clustered
-    private Double calculateFourPlusLaneMovement(){
+    private Double calculateFourPlusLaneDiagonalMovement(){
         if(currentDonkeyLane == 0){
             currentDonkeyLane += 1;
         }

@@ -23,7 +23,8 @@ public class DonkeyMovementTest {
     void CanMoveLeftFalse(){
         Tuple<Double, Double> actual = calculator.calculateDonkeyInitialPosition();
         actual = calculator.calculateDonkeyLaneChangePosition(Operator.LEFT, actual);
-        Tuple<Double, Double> unexpected = new Tuple(-350.0,0.0);
+        Tuple<Double, Double> unexpected = calculator.calculateDonkeyInitialPosition();
+        unexpected = calculator.calculateDonkeyLaneChangePosition(Operator.LEFT, unexpected);
 
         assertFalse(!actual.equals(unexpected));
     }
@@ -31,7 +32,9 @@ public class DonkeyMovementTest {
     @org.junit.jupiter.api.Test
     void CanMoveRightFalse(){
         Tuple<Double, Double> actual = calculator.calculateDonkeyInitialPosition();
+        actual = calculator.calculateDonkeyLaneChangePosition(Operator.RIGHT, actual);
         Tuple<Double, Double> unexpected = new Tuple(-100.0, 0.0);
+        unexpected = calculator.calculateDonkeyLaneChangePosition(Operator.RIGHT, unexpected);
 
         assertFalse(!actual.equals(unexpected));
     }
@@ -40,7 +43,7 @@ public class DonkeyMovementTest {
     void CanMoveOriginalLaneTrue(){
         Tuple<Double, Double> actual = calculator.calculateDonkeyInitialPosition();
         actual = calculator.calculateDonkeyLaneChangePosition(Operator.LEFT, actual);
-        Tuple<Double, Double> unexpected = new Tuple(-100.0, 0.0);
+        Tuple<Double, Double> unexpected = calculator.calculateCarInitialPosition();
 
         assertTrue(!actual.equals(unexpected));
     }
@@ -48,7 +51,8 @@ public class DonkeyMovementTest {
     @org.junit.jupiter.api.Test
     void CanMoveLeftTrue(){
         Tuple<Double, Double> actual = calculator.calculateDonkeyInitialPosition();
-        Tuple<Double, Double> unexpected = new Tuple(-350.0,0.0);
+        Tuple<Double, Double> unexpected = calculator.calculateDonkeyInitialPosition();
+        unexpected = calculator.calculateDonkeyLaneChangePosition(Operator.LEFT, unexpected);
 
         assertTrue(!actual.equals(unexpected));
     }
