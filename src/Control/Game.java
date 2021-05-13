@@ -77,6 +77,7 @@ public class Game extends Application {
 
     private double randomVariable;//Determines donkey spawn lane after a reset
     private int wiggleRoom = 150;//distance from bottom of donkey spawn to win
+    private int DIAGONAL_NUM = 2;//Constant to help randomly decide when donkey can move diagonally
 
     private InputParser inputParser;
     private Timeline loop;
@@ -370,6 +371,13 @@ public class Game extends Application {
         loop.play();
     }
 
+    public void startDonkeyDiagonal(){
+        loop = new Timeline(
+                new KeyFrame(Duration.millis(5), e -> moveDonkey(Operator.DIAGONAL)));
+        loop.setCycleCount(Timeline.INDEFINITE);
+        loop.play();
+    }
+
     public Tuple<Double, Double> getCarPos(){
         return new Tuple<>(carPaneBox.getTranslateX(), carPaneBox.getTranslateY());
     }
@@ -450,6 +458,10 @@ public class Game extends Application {
             deltaPosition = positionCalculator.calculateDonkeyForwardAdvance(1, getDonkeyPos());
 
         }
+        else if(sign == Operator.DIAGONAL)
+        {
+            deltaPosition = positionCalculator.calculateDonkeyDiagonalAdvance(1, getDonkeyPos());
+        }
 
         return deltaPosition;
     }
@@ -510,6 +522,15 @@ public class Game extends Application {
     public void resetDonkey()
     {
         randomVariable  = random.nextInt(laneCount);
+        if(lanes.size() != 2){
+            int donkeyDiagonalDecider = random.nextInt(5);
+            if(donkeyDiagonalDecider == 2){
+                startDonkeyDiagonal();
+            }
+            else{
+                startDonkey();
+            }
+        }
         positionCalculator.setCurrentDonkeyLane(0);
         moveDonkey(Operator.LEFT);
 

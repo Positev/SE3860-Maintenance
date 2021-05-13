@@ -5,6 +5,7 @@ import IO.Operator;
 import Utils.Tuple;
 
 import java.util.List;
+import java.util.Random;
 
 public class PositionUpdateCalculator {
 
@@ -18,6 +19,9 @@ public class PositionUpdateCalculator {
     private List<Lane> lanes;
     private int currentCarLane;
     private int currentDonkeyLane;
+    private int originalDonkeyLane;
+    private Operator moveFromMiddleThree;
+    private Random randomCalc = new Random();
 
     public PositionUpdateCalculator(List<Lane> lanes){
         setLanes(lanes);
@@ -56,6 +60,88 @@ public class PositionUpdateCalculator {
         return new Tuple<>(current.getX(), current.getY() + deltaY);
     }
 
+    public Tuple<Double, Double> calculateDonkeyDiagonalAdvance(double distance, Tuple<Double,Double> current){
+        if(current.getY() == 0){
+            originalDonkeyLane = currentDonkeyLane;
+            if(this.lanes.size() == 3){
+                int decideDirection = randomCalc.nextInt(2);
+                if(decideDirection == 0){
+                    moveFromMiddleThree = Operator.LEFT;
+                }
+                else{
+                    moveFromMiddleThree = Operator.RIGHT;
+                }
+            }
+        }
+        double deltaY = distance;
+        double deltaX;
+
+        if(this.lanes.size() == 3){
+            deltaX = calculateThreeLaneMovement();
+            return new Tuple<>(deltaX, current.getY() + deltaY);
+        }
+        else if(this.lanes.size() == 4){
+            deltaX = calculateFourLaneMovement();
+            return new Tuple<>(deltaX, current.getY() + deltaY);
+        }
+        else{ //This should not be run at any point, but this is for security against errors.
+            return new Tuple<>(current.getX(), current.getY() + deltaY); //Essentially this would run if there were two lanes
+        } //But this method shouldn't be run if there are two lanes
+    }
+
+    //I moved this into its own method so that the main diagonal method was less clustered
+    private Double calculateThreeLaneMovement(){
+        if(currentDonkeyLane == 0){
+            currentDonkeyLane += 1;
+        }
+        else if(currentDonkeyLane == 2){
+            currentDonkeyLane -= 1;
+        }
+        else{
+            if(currentDonkeyLane == originalDonkeyLane){
+                if(moveFromMiddleThree == Operator.LEFT){
+                    currentDonkeyLane -= 1;
+                }
+                else{
+                    currentDonkeyLane += 1;
+                }
+            }
+            else{
+                currentDonkeyLane = originalDonkeyLane;
+            }
+        }
+
+        Lane occupiedLane = this.lanes.get(currentDonkeyLane);
+        double deltaX = (- occupiedLane.getWidth() - donkeyImageSize.getX() / 2 ) + currentDonkeyLane * occupiedLane.getWidth();
+        return deltaX;
+    }
+    //I also moved this into its own method so the main diagonal movement is less clustered
+    private Double calculateFourLaneMovement(){
+        if(currentDonkeyLane == 0){
+            currentDonkeyLane += 1;
+        }
+        else if(currentDonkeyLane == 3){
+            currentDonkeyLane -= 1;
+        }
+        else{
+            if(currentDonkeyLane == originalDonkeyLane){
+                int determineMovement = randomCalc.nextInt(2);
+                if(determineMovement == 0){
+                    currentDonkeyLane -= 1;
+                }
+                else{
+                    currentDonkeyLane += 1;
+                }
+            }
+            else{
+                currentDonkeyLane = originalDonkeyLane;
+            }
+        }
+
+        Lane occupiedLane = this.lanes.get(currentDonkeyLane);
+        double deltaX = (- occupiedLane.getWidth() - donkeyImageSize.getX() / 2 ) + currentDonkeyLane * occupiedLane.getWidth();
+        return deltaX;
+    }
 
     public Tuple<Double, Double>  calculateLaneChangePosition(Operator direction, Tuple<Double,Double> current){
         double deltaX = 0.0;
