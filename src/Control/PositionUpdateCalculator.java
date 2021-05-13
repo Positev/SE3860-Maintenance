@@ -94,6 +94,13 @@ public class PositionUpdateCalculator {
         return new Tuple<>(current.getX(),current.getY() - deltaY);
     }
 
+
+    public Tuple<Double, Double>  calculateCarMoveBackwardPosition(double distance, Tuple<Double,Double> current){
+
+        double deltaY = getCarImageSize().getY() - distance;
+        return new Tuple<>(current.getX(),current.getY() + deltaY);
+    }
+
     public Tuple<Double, Double> getCarImageSize() {
         return carImageSize;
     }

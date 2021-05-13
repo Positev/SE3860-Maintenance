@@ -263,8 +263,11 @@ public class Game extends Application {
         LabelDriverScore = new Label("Driver");
         LabelDonkeyNum = new Label("" + DonkeyNum);
         LabelDriverNum = new Label("" + DriverNum);
-        LabelInstructions = new Label("Press Left Arrow to\nmove to the left lane\nPress Right Arrow to\n" +
-                "move to the right lane\n\nPress ESC to exit");
+        LabelInstructions = new Label("Press Left Arrow to\nmove to the left lane\n" +
+                "Press Right Arrow to\nmove to the right lane\n" +
+                "Press Up Arrow to\ngo faster\n" +
+                "Press Down Arrow to\nslow down\n" +
+                "Press ESC to exit");
 
         LabelDonkeyScore.setTextFill(ColorScheme.colorGameWhite);
         LabelDriverScore.setTextFill(ColorScheme.colorGameWhite);
@@ -295,7 +298,7 @@ public class Game extends Application {
         LabelDriverScore.setPadding(new Insets(20,250,0, 0));
         LabelDonkeyNum.setPadding(new Insets(30,0,0, 120));
         LabelDriverNum.setPadding(new Insets(30,315,0, 0));
-        LabelInstructions.setPadding(new Insets(450,100,0, 0));
+        LabelInstructions.setPadding(new Insets(250,100,0, 0));
 
     }
 
@@ -312,8 +315,6 @@ public class Game extends Application {
         stage.setY(0);
         stage.setMaxHeight(HEIGHT);
         stage.setMaxWidth(WIDTH);
-        stage.setMinHeight(HEIGHT);
-        stage.setMinWidth(WIDTH);
     }
 
     /**
@@ -392,6 +393,14 @@ public class Game extends Application {
             deltaPosition = positionCalculator.calculateLaneChangePosition(sign, getCarPos());
 
         }
+        else if(sign == Operator.DOWN) {
+            deltaPosition = positionCalculator.calculateCarMoveBackwardPosition(carMoveIncrement, getCarPos());
+
+        }
+        else if(sign == Operator.UP) {
+            deltaPosition = positionCalculator.calculateCarMoveForwardPosition(carMoveIncrement, getCarPos());
+
+        }
         else if(sign == Operator.VERTICAL)
         {
             deltaPosition = positionCalculator.calculateCarMoveForwardPosition(carMoveIncrement, getCarPos());
@@ -414,7 +423,7 @@ public class Game extends Application {
 
 
 
-        if (sign == Operator.LEFT || sign == Operator.RIGHT){
+        if (sign == Operator.LEFT || sign == Operator.RIGHT || sign == Operator.UP || sign == Operator.DOWN){
             sounds.playLaneSounds();
             if(checkCollision())
             {
