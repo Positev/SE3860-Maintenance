@@ -60,9 +60,8 @@ public class PositionUpdateCalculator {
         return new Tuple<>(current.getX(), current.getY() + deltaY);
     }
 
-    public Tuple<Double, Double> calculateDonkeyDiagonalAdvance(double distance, Tuple<Double,Double> current){
+    public Tuple<Double, Double> calculateDonkeyDiagonalAdvance(Tuple<Double,Double> current){
         if(current.getY() == 0){
-            originalDonkeyLane = currentDonkeyLane;
             if(this.lanes.size() == 3){
                 int decideDirection = randomCalc.nextInt(2);
                 if(decideDirection == 0){
@@ -73,19 +72,19 @@ public class PositionUpdateCalculator {
                 }
             }
         }
-        double deltaY = distance;
+
         double deltaX;
 
         if(this.lanes.size() == 3){
             deltaX = calculateThreeLaneMovement();
-            return new Tuple<>(deltaX, current.getY() + deltaY);
+            return new Tuple<>(deltaX, current.getY());
         }
-        else if(this.lanes.size() == 4){
-            deltaX = calculateFourLaneMovement();
-            return new Tuple<>(deltaX, current.getY() + deltaY);
+        else if(this.lanes.size() >= 4){
+            deltaX = calculateFourPlusLaneMovement();
+            return new Tuple<>(deltaX, current.getY());
         }
         else{ //This should not be run at any point, but this is for security against errors.
-            return new Tuple<>(current.getX(), current.getY() + deltaY); //Essentially this would run if there were two lanes
+            return new Tuple<>(current.getX(), current.getY()); //Essentially this would run if there were two lanes
         } //But this method shouldn't be run if there are two lanes
     }
 
@@ -100,10 +99,10 @@ public class PositionUpdateCalculator {
         else{
             if(currentDonkeyLane == originalDonkeyLane){
                 if(moveFromMiddleThree == Operator.LEFT){
-                    currentDonkeyLane -= 1;
+                    currentDonkeyLane = 0;
                 }
-                else{
-                    currentDonkeyLane += 1;
+                else if(moveFromMiddleThree == Operator.RIGHT){
+                    currentDonkeyLane = 2;
                 }
             }
             else{
@@ -116,11 +115,11 @@ public class PositionUpdateCalculator {
         return deltaX;
     }
     //I also moved this into its own method so the main diagonal movement is less clustered
-    private Double calculateFourLaneMovement(){
+    private Double calculateFourPlusLaneMovement(){
         if(currentDonkeyLane == 0){
             currentDonkeyLane += 1;
         }
-        else if(currentDonkeyLane == 3){
+        else if(currentDonkeyLane == lanes.size() - 1){
             currentDonkeyLane -= 1;
         }
         else{
@@ -141,6 +140,10 @@ public class PositionUpdateCalculator {
         Lane occupiedLane = this.lanes.get(currentDonkeyLane);
         double deltaX = (- occupiedLane.getWidth() - donkeyImageSize.getX() / 2 ) + currentDonkeyLane * occupiedLane.getWidth();
         return deltaX;
+    }
+
+    public void setOriginalDonkeyLane(int originalLane){
+        originalDonkeyLane = originalLane;
     }
 
     public Tuple<Double, Double>  calculateLaneChangePosition(Operator direction, Tuple<Double,Double> current){
