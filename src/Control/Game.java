@@ -498,7 +498,7 @@ public class Game extends Application {
 
         donkeyPaneBox.setTranslateX(nextPosition.getX().doubleValue());
         donkeyPaneBox.setTranslateY(nextPosition.getY().doubleValue());
-        if(sign == Operator.VERTICAL || sign == Operator.DIAGONAL)
+        if(sign == Operator.UP || sign == Operator.VERTICAL || sign == Operator.DIAGONAL)
         {
             if(checkCollision())
             {
