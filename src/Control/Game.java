@@ -549,7 +549,7 @@ public class Game extends Application {
 
             moveDonkey(Operator.RIGHT);
         }
-        positionCalculator.setOriginalDonkeyLane((int)randomVariable);
+
         sounds.playDonkeySounds();
         donkey.movedonkeyHitBox((int)donkeyPaneBox.getTranslateX(), (int)donkeyPaneBox.getTranslateY());
     }
