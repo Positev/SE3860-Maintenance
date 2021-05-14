@@ -266,11 +266,12 @@ public class Game extends Application {
         LabelDriverScore = new Label("Driver");
         LabelDonkeyNum = new Label("" + DonkeyNum);
         LabelDriverNum = new Label("" + DriverNum);
-        LabelInstructions = new Label("Press Left Arrow to\nmove to the left lane\n" +
-                "Press Right Arrow to\nmove to the right lane\n" +
-                "Press Up Arrow to\ngo faster\n" +
-                "Press Down Arrow to\nslow down\n" +
-                "Press ESC to exit");
+
+        LabelInstructions = new Label("Move Left: Left Arrow\n" +
+                "Move Right: Right Arrow\n" +
+                "Speed Up: Up Arrow\n" +
+                "Slow Down: Down Arrow\n" +
+                "Exit: Esc");
 
         LabelDonkeyScore.setTextFill(ColorScheme.colorGameWhite);
         LabelDriverScore.setTextFill(ColorScheme.colorGameWhite);
@@ -282,7 +283,7 @@ public class Game extends Application {
         LabelDriverScore.setFont(Font.font("Rockwell", 55));
         LabelDonkeyNum.setFont(Font.font("Rockwell", 55));
         LabelDriverNum.setFont(Font.font("Rockwell", 55));
-        LabelInstructions.setFont(Font.font("Rockwell", 40));
+        LabelInstructions.setFont(Font.font("Rockwell", 24));
 
         LabelDonkeyScore.setMaxWidth(Double.MAX_VALUE);
         LabelDriverScore.setMaxWidth(Double.MAX_VALUE);
@@ -301,7 +302,7 @@ public class Game extends Application {
         LabelDriverScore.setPadding(new Insets(20,250,0, 0));
         LabelDonkeyNum.setPadding(new Insets(30,0,0, 120));
         LabelDriverNum.setPadding(new Insets(30,315,0, 0));
-        LabelInstructions.setPadding(new Insets(250,100,0, 0));
+        LabelInstructions.setPadding(new Insets(500,1000,0, 0));
 
     }
 
@@ -704,7 +705,7 @@ public class Game extends Application {
         loop.play();
         carImageView.setVisible(true);
         donkeyImageView.setVisible(true);
-
+        resetDonkey();
         carRightImageView.setVisible(false);
         carLeftImageView.setVisible(false);
         donkeyRightImageView.setVisible(false);
