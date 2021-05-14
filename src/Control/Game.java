@@ -368,11 +368,11 @@ public class Game extends Application {
         startDonkey();
     }
     public void incrementGameSpeed(){
-        setGameSpeed(gameSpeed - .1f);
+        setGameSpeed(gameSpeed - .5f);
     }
 
     public void decrementGameSpeed(){
-        setGameSpeed(gameSpeed + .1f);
+        setGameSpeed(gameSpeed + .5f);
     }
 
     public void setGameSpeed(float speed){
@@ -380,6 +380,7 @@ public class Game extends Application {
         speed = Math.max(speed, MAX_GAME_SPEED);
         gameSpeed = speed;
 
+        loop.stop();
         loop = new Timeline(
                 new KeyFrame(Duration.millis(gameSpeed), e -> moveDonkey(Operator.VERTICAL)));
         loop.setCycleCount(Timeline.INDEFINITE);
@@ -391,7 +392,7 @@ public class Game extends Application {
     public void startDonkey()
     {
         loop = new Timeline(
-                new KeyFrame(Duration.millis(5), e -> moveDonkey(Operator.VERTICAL)));
+                new KeyFrame(Duration.millis(gameSpeed), e -> moveDonkey(Operator.VERTICAL)));
         loop.setCycleCount(Timeline.INDEFINITE);
         loop.play();
     }
@@ -399,7 +400,7 @@ public class Game extends Application {
     public void startDonkeyDiagonal(){
         hasGoneDiagonal = true;
         loop = new Timeline(
-                new KeyFrame(Duration.millis(5), e -> moveDonkey(Operator.VERTICAL)));
+                new KeyFrame(Duration.millis(gameSpeed), e -> moveDonkey(Operator.VERTICAL)));
         loop.setCycleCount(Timeline.INDEFINITE);
         loop.play();
 
@@ -419,7 +420,7 @@ public class Game extends Application {
 
     public Tuple<Double,Double> getNextCarPosition(Operator sign){
 
-        double carMoveIncrement = (HEIGHT - (donkey.getDonkeyImg().getHeight() + wiggleRoom + car.getCarImg().getHeight())) / 22;
+        double carMoveIncrement = (HEIGHT - (donkey.getDonkeyImg().getHeight() + wiggleRoom + car.getCarImg().getHeight())) / 11;
 
         Tuple<Double, Double> deltaPosition = new Tuple<>(0.0,0.0);
 
