@@ -6,5 +6,6 @@ public enum Operator {
     UP,
     DOWN,
     INITIAL,
-    VERTICAL
+    VERTICAL,
+    DIAGONAL
 }
