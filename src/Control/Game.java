@@ -507,10 +507,12 @@ public class Game extends Application {
                 addPointDonkey();
                 resetDonkey();
                 resetCar();
+                determineDonkeyMovement();
             }
             if (donkeyPaneBox.getTranslateY() > (HEIGHT - donkey.getDonkeyImg().getHeight())) //if donkey passes end border, reset.
             {
                 resetDonkey();
+                determineDonkeyMovement();
                 progressCar();
                 donkeyPassedCount++;
                 if (donkeyPassedCount == 11) {
@@ -538,21 +540,6 @@ public class Game extends Application {
     public void resetDonkey()
     {
         randomVariable  = random.nextInt(laneCount);
-        if(lanes.size() != 2){
-            loop.stop();
-            if(hasGoneDiagonal){
-                diagonalLoop.stop();
-                hasGoneDiagonal = false;
-            }
-            int donkeyDiagonalDecider = random.nextInt(5);
-            if(donkeyDiagonalDecider == 2){
-                startDonkeyDiagonal();
-            }
-            else{
-                startDonkey();
-            }
-
-        }
         positionCalculator.setCurrentDonkeyLane(0);
         moveDonkey(Operator.LEFT);
 
@@ -732,5 +719,23 @@ public class Game extends Application {
 
     public void setDonkeyPaneBox(StackPane pane) {
         this.donkeyPaneBox  = pane;
+    }
+
+    public void determineDonkeyMovement(){
+        if(lanes.size() != 2){
+            loop.stop();
+            if(hasGoneDiagonal){
+                diagonalLoop.stop();
+                hasGoneDiagonal = false;
+            }
+            int donkeyDiagonalDecider = random.nextInt(4);
+            if(donkeyDiagonalDecider == 2){
+                startDonkeyDiagonal();
+            }
+            else{
+                startDonkey();
+            }
+
+        }
     }
 }
