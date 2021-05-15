@@ -64,6 +64,7 @@ public class Game extends Application {
     private ImageView carLeftImageView;
     private ImageView donkeyRightImageView;
     private ImageView donkeyLeftImageView;
+    private boolean crashAnimationActive = false;
     //score-keeping label VBoxes and Labels
     private VBox labelPane1;
     private VBox labelPane2;
@@ -376,6 +377,9 @@ public class Game extends Application {
     }
 
     public void setGameSpeed(float speed){
+        if (crashAnimationActive){
+            return;
+        }
         speed = Math.min(speed, MIN_GAME_SPEED);
         speed = Math.max(speed, MAX_GAME_SPEED);
         gameSpeed = speed;
@@ -637,6 +641,7 @@ public class Game extends Application {
      */
     public void startCrashAnimation()
     {
+        crashAnimationActive = true;
         loop.stop();
         carImageView.setVisible(false);
         donkeyImageView.setVisible(false);
@@ -719,6 +724,7 @@ public class Game extends Application {
     public void stopCrashAnimation()
     {
         crashLoop.stop();
+        crashAnimationActive = false;
         loop.play();
         carImageView.setVisible(true);
         donkeyImageView.setVisible(true);
