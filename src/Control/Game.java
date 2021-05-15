@@ -304,9 +304,9 @@ public class Game extends Application {
 
         // insets are top ,right ,bottom ,left
         LabelDonkeyScore.setPadding(new Insets(20,0,0, 50));
-        LabelDriverScore.setPadding(new Insets(20,250,0, 0));
+        LabelDriverScore.setPadding(new Insets(20,75,0, 0));
         LabelDonkeyNum.setPadding(new Insets(30,0,0, 120));
-        LabelDriverNum.setPadding(new Insets(30,315,0, 0));
+        LabelDriverNum.setPadding(new Insets(30,125,0, 0));
         LabelInstructions.setPadding(new Insets(500,1000,0, 0));
 
     }
