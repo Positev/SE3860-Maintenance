@@ -510,6 +510,10 @@ public class Game extends Application {
      * */
     public void moveDonkey(Operator sign) {
 
+        if (crashAnimationActive){
+            return;
+        }
+
         Tuple<Double, Double> nextPosition = calculateNextDonkeyPosition(sign);
         donkey.movedonkeyHitBox((int)nextPosition.getX().doubleValue(), (int)nextPosition.getY().doubleValue());
 
@@ -561,15 +565,15 @@ public class Game extends Application {
      */
     public void resetDonkey()
     {
-        randomVariable  = random.nextInt(laneCount);
+        randomVariable  = random.nextInt(laneCount) ;
         positionCalculator.setCurrentDonkeyLane(0);
-        moveDonkey(Operator.LEFT);
 
-        donkeyPaneBox.setTranslateY(0);
+        moveDonkey(Operator.LEFT);
         for (int i = 0; i < randomVariable; i++) {
 
             moveDonkey(Operator.RIGHT);
         }
+        donkeyPaneBox.setTranslateY(0);
 
         sounds.playDonkeySounds();
         donkey.movedonkeyHitBox((int)donkeyPaneBox.getTranslateX(), (int)donkeyPaneBox.getTranslateY());
@@ -589,9 +593,13 @@ public class Game extends Application {
      */
     public void addPointCar()
     {
+        float changePerPoint = .2f;
         carScore++;
         labelPane2.getChildren().remove(1);
         labelPane2.getChildren().add(refreshDriverScore());
+        MIN_GAME_SPEED = Math.max(.5F, MIN_GAME_SPEED - changePerPoint);
+        MAX_GAME_SPEED = Math.max(.5F, MAX_GAME_SPEED - changePerPoint);
+        setGameSpeed(gameSpeed - changePerPoint);
     }
 
     /**
@@ -711,8 +719,12 @@ public class Game extends Application {
     public void stopCrashAnimation()
     {
         crashLoop.stop();
-        crashAnimationActive = false;
-        loop.play();
+        if (crashAnimationActive){
+            resetDonkey();
+            crashAnimationActive = false;
+            loop.play();
+        }
+
         carImageView.setVisible(true);
         donkeyImageView.setVisible(true);
 
