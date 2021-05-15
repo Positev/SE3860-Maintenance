@@ -46,12 +46,12 @@ public class InputParser {
                         break;
                     case UP:
                         if (!title) {
-                            game.moveCar(Operator.UP);
+                            game.incrementGameSpeed();
                         }
                         break;
                     case DOWN:
                         if (!title) {
-                            game.moveCar(Operator.DOWN);
+                            game.decrementGameSpeed();
                         }
                         break;
                     case ESCAPE:

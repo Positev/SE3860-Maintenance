@@ -37,6 +37,10 @@ public class Game extends Application {
     private static final int MAX_LANES = 4;
     private static final int MIN_LANES = 2;
 
+    private float gameSpeed = 5;
+    private float MAX_GAME_SPEED = 1; // Used as delay so lower is higher
+    private float MIN_GAME_SPEED = 10;
+
     private Stage stage;
 
 
@@ -60,6 +64,7 @@ public class Game extends Application {
     private ImageView carLeftImageView;
     private ImageView donkeyRightImageView;
     private ImageView donkeyLeftImageView;
+    private boolean crashAnimationActive = false;
     //score-keeping label VBoxes and Labels
     private VBox labelPane1;
     private VBox labelPane2;
@@ -363,14 +368,35 @@ public class Game extends Application {
         inputParser.addKeyHandler();
         startDonkey();
     }
+    public void incrementGameSpeed(){
+        setGameSpeed(gameSpeed - .5f);
+    }
 
+    public void decrementGameSpeed(){
+        setGameSpeed(gameSpeed + .5f);
+    }
+
+    public void setGameSpeed(float speed){
+        if (crashAnimationActive){
+            return;
+        }
+        speed = Math.min(speed, MIN_GAME_SPEED);
+        speed = Math.max(speed, MAX_GAME_SPEED);
+        gameSpeed = speed;
+
+        loop.stop();
+        loop = new Timeline(
+                new KeyFrame(Duration.millis(gameSpeed), e -> moveDonkey(Operator.VERTICAL)));
+        loop.setCycleCount(Timeline.INDEFINITE);
+        loop.play();
+    }
     /**
      * startDonkey starts the timeline for the donkey to move down the screen.
      */
     public void startDonkey()
     {
         loop = new Timeline(
-                new KeyFrame(Duration.millis(5), e -> moveDonkey(Operator.VERTICAL)));
+                new KeyFrame(Duration.millis(gameSpeed), e -> moveDonkey(Operator.VERTICAL)));
         loop.setCycleCount(Timeline.INDEFINITE);
         loop.play();
     }
@@ -378,7 +404,7 @@ public class Game extends Application {
     public void startDonkeyDiagonal(){
         hasGoneDiagonal = true;
         loop = new Timeline(
-                new KeyFrame(Duration.millis(5), e -> moveDonkey(Operator.VERTICAL)));
+                new KeyFrame(Duration.millis(gameSpeed), e -> moveDonkey(Operator.VERTICAL)));
         loop.setCycleCount(Timeline.INDEFINITE);
         loop.play();
 
@@ -413,12 +439,7 @@ public class Game extends Application {
             deltaPosition = positionCalculator.calculateCarMoveBackwardPosition(carMoveIncrement, getCarPos());
 
         }
-        else if(sign == Operator.UP) {
-            deltaPosition = positionCalculator.calculateCarMoveForwardPosition(carMoveIncrement, getCarPos());
-
-        }
-        else if(sign == Operator.VERTICAL)
-        {
+        else if(sign == Operator.UP || sign == Operator.VERTICAL) {
             deltaPosition = positionCalculator.calculateCarMoveForwardPosition(carMoveIncrement, getCarPos());
 
         }
@@ -607,6 +628,7 @@ public class Game extends Application {
      */
     public void startCrashAnimation()
     {
+        crashAnimationActive = true;
         loop.stop();
         carImageView.setVisible(false);
         donkeyImageView.setVisible(false);
@@ -689,10 +711,11 @@ public class Game extends Application {
     public void stopCrashAnimation()
     {
         crashLoop.stop();
+        crashAnimationActive = false;
         loop.play();
         carImageView.setVisible(true);
         donkeyImageView.setVisible(true);
-        resetDonkey();
+
         carRightImageView.setVisible(false);
         carLeftImageView.setVisible(false);
         donkeyRightImageView.setVisible(false);
