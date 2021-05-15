@@ -337,7 +337,7 @@ public class Game extends Application {
         LabelDriverNum.setFont(Font.font("Rockwell", 55));
         LabelDriverNum.setMaxWidth(Double.MAX_VALUE);
         LabelDriverNum.setAlignment(Pos.TOP_RIGHT);
-        LabelDriverNum.setPadding(new Insets(30,315,0, 0));
+        LabelDriverNum.setPadding(new Insets(30,125,0, 0));
 
         return LabelDriverNum;
     }
