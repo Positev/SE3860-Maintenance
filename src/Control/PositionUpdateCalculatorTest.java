@@ -89,12 +89,12 @@ class PositionUpdateCalculatorTest {
     void calculateCarMoveForwardPosition() {
         Tuple<Double,Double> position = calculator.calculateCarInitialPosition();
         Tuple<Double, Double> actual = calculator.calculateCarMoveForwardPosition(50, position);
-        Tuple<Double, Double> expected = new Tuple(-100.0,200.0);
+        Tuple<Double, Double> expected = new Tuple(-100.0,500.0);
 
         assertEquals(expected, actual);
 
         actual = calculator.calculateCarMoveForwardPosition(50, actual);
-        expected = new Tuple(-100.0,-150.0);
+        expected = new Tuple(-100.0,450.0);
 
         assertEquals(expected, actual);
     }
