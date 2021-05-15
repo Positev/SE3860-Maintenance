@@ -276,12 +276,14 @@ class ResetDonkeyTest {
 
     @Test
     void testResetDonkeyIntegrationLane2() {
-        double expectedX = -69;
+        double expectedX = 0;
         double expectedY = 0;
 
         mockGame.sounds = Mockito.spy(Sounds.class);
         mockGame.setRandom(new Random(0));
         mockGame.laneCount = 2;
+        mockGame.lanes =  mockGame.laneGenerator.makeLanes( 2);
+        mockGame.positionCalculator = new PositionUpdateCalculator(mockGame.lanes);
 
         mockGame.resetDonkey();
         Mockito.verify(mockGame, atLeastOnce()).moveDonkey(Mockito.any(Operator.class));
@@ -295,12 +297,14 @@ class ResetDonkeyTest {
 
     @Test
     void testResetDonkeyIntegrationLane1() {
-        double expectedX = -259;
+        double expectedX = -190;
         double expectedY = 0;
 
         mockGame.sounds = Mockito.spy(Sounds.class);
         mockGame.setRandom(new Random(1565254165));
         mockGame.laneCount = 2;
+        mockGame.lanes =  mockGame.laneGenerator.makeLanes( 2);
+        mockGame.positionCalculator = new PositionUpdateCalculator(mockGame.lanes);
 
         mockGame.resetDonkey();
         Mockito.verify(mockGame, atLeastOnce()).moveDonkey(Mockito.any(Operator.class));
@@ -314,12 +318,14 @@ class ResetDonkeyTest {
 
     @Test
     void testResetDonkeyIntegrationLane3() {
-        double expectedX = 121;
+        double expectedX = 190;
         double expectedY = 0;
 
         mockGame.sounds = Mockito.spy(Sounds.class);
         mockGame.setRandom(new Random(298498195));
         mockGame.laneCount = 3;
+        mockGame.lanes =  mockGame.laneGenerator.makeLanes( 3);
+        mockGame.positionCalculator = new PositionUpdateCalculator(mockGame.lanes);
 
         mockGame.resetDonkey();
         Mockito.verify(mockGame, atLeastOnce()).moveDonkey(Mockito.any(Operator.class));
@@ -333,12 +339,14 @@ class ResetDonkeyTest {
 
     @Test
     void testResetDonkeyIntegrationLane4() {
-        double expectedX = 311;
+        double expectedX = 380;
         double expectedY = 0;
 
         mockGame.sounds = Mockito.spy(Sounds.class);
         mockGame.setRandom(new Random(9000));
         mockGame.laneCount = 4;
+        mockGame.lanes =  mockGame.laneGenerator.makeLanes( 4);
+        mockGame.positionCalculator = new PositionUpdateCalculator(mockGame.lanes);
 
         mockGame.resetDonkey();
         Mockito.verify(mockGame, atLeastOnce()).moveDonkey(Mockito.any(Operator.class));
